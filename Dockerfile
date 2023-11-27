@@ -1,13 +1,9 @@
-FROM svizor/zoomcamp-model:3.10.12-slim
+FROM agrigorev/zoomcamp-bees-wasps:v2
 
-RUN pip install pipenv
+RUN pip install keras-image-helper
+RUN pip install https://github.com/alexeygrigorev/tflite-aws-lambda/raw/main/tflite/tflite_runtime-2.14.0-cp310-cp310-linux_x86_64.whl
 
-COPY ["Pipfile", "Pipfile.lock", "./"]
+COPY homework_week9.py .
+ENV MODEL_NAME=bees-wasps-v2.tflite
 
-RUN pipenv install --system --deploy
-
-COPY ["q6_predict.py", "./"]
-
-EXPOSE 9696
-
-ENTRYPOINT ["waitress-serve", "--listen=0.0.0.0:9696", "q6_predict:app"]
+CMD [ "homework_week9.lambda_handler" ]
